@@ -1,23 +1,26 @@
-Frontend for CMIS
+# CMIS Backend
 
-Set VITE_API_BASE to point to backend (e.g. http://127.0.0.1:5000)
+Express + MongoDB backend for College Management System.
 
-End-to-end tests with Playwright:
+Create a `.env` file with:
 
-1. Install Playwright:
+- MONGO_URI=
+- JWT_SECRET=
+- PORT=5000
 
-```
-cd Frontend
-npm i -D @playwright/test
-npx playwright install
-```
+Important endpoints:
 
-2. Run tests:
+- POST /api/auth/register { email, password } => { success }
+- POST /api/auth/login { email, password } => { success, data: { accessToken, refreshToken } }
+- GET /api/auth/me (protected) => { success, data: { email, role, ... } }
+- POST /api/auth/refresh { refreshToken } => { success, data: { accessToken } }
+- POST /api/auth/logout (protected) => blacklists current access token and clears refresh token
 
-```
-npx playwright test
-```
+Run:
+
+npm install
+npm run dev
 
 Notes:
-- The frontend will auto-refresh access tokens when a refresh token exists in localStorage as `cmis_refresh`.
-- Admin routes are protected client-side using `AdminRoute` which redirects non-admins.
+- For tests, set MONGO_URI_TEST to a separate test database and run `npm test`.
+- Token blacklist is stored in collection `tokenblacklists` and is simple; in production consider a more robust revocation strategy.
